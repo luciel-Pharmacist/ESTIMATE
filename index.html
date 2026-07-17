@@ -25,19 +25,19 @@ button:hover{background:var(--teal-d)}
   <input type="password" id="pw" placeholder="암호" autofocus>
   <button onclick="go()">접속</button>
   <div class="err" id="err">암호가 올바르지 않습니다</div>
-  <div class="foot">AES-256 암호화 · 데이터: 신성 202603 · 내부데이터 2026.1</div>
+  <div class="foot">AES-256 암호화 · 데이터: 신성+BRP 202603 · 내부데이터 조직 2026.1</div>
 </div>
 <div class="box" id="menu" style="display:none">
   <div class="logo">BRPConnect</div>
   <div class="t">Performance Tracker — 노보노디스크</div>
   <div class="menu">
     <a href="settings.html"><b>① 담당자 설정</b><span>팀·담당자별 시도/시군구/병의원 담당 구역 설정 (8,049개 기관)</span></a>
-    <a href="dashboard.html"><b>② 담당자 실적 분석</b><span>BU→팀→담당자 드릴다운 · 신성 202603 실측 귀속 98.05%</span></a>
+    <a href="dashboard.html"><b>② 담당자 실적 분석</b><span>BU→팀→담당자 드릴다운 · 신성+BRP(심평원) 202603 · 소스 구분</span></a>
   </div>
   <div class="foot">세션 동안 암호가 유지됩니다</div>
 </div>
 <script>
-const CHECK = {"salt":"uRKW+JRNTsbK6oyusC5Fdg==","iv":"BAudrMURzCsHwQ4k","ct":"fj3HK8/J7+Dx+Tq4/R+YZLfbklDA0g=="};
+const CHECK = {"salt":"jW40WBEyYifYZfQfwf+iQw==","iv":"4HX9+249klfOcV65","ct":"WK7uWAvkIUzNAqefOCu0qpgNbasNgA=="};
 
 async function deriveKey(pw, salt){
   const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
