@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRP Performance Tracker</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{--teal:#0e7d7d;--teal-d:#0a5c5c;--teal-bg:#e6f2f2;--ink:#1c2b2b;--sub:#5f7676;--line:#dde7e7;--bg:#f4f8f8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Pretendard,-apple-system,'Malgun Gothic',sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;color:var(--ink)}
+.box{background:#fff;border:1px solid var(--line);border-radius:16px;padding:38px 40px;width:400px;box-shadow:0 8px 30px rgba(14,125,125,.08)}
+.logo{font-weight:800;color:var(--teal);font-size:20px;margin-bottom:4px}
+.t{font-size:14px;color:var(--sub);margin-bottom:24px}
+input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px}
+input:focus{outline:2px solid var(--teal-bg);border-color:var(--teal)}
+button{width:100%;padding:12px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
+button:hover{background:var(--teal-d)}
+.err{color:#c0392b;font-size:12.5px;margin-top:10px;display:none}
+.menu a{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:12px;margin-bottom:12px;text-decoration:none;color:var(--ink)}
+.menu a:hover{border-color:var(--teal);background:var(--teal-bg)}
+.menu b{color:var(--teal-d)}
+.menu span{display:block;font-size:12px;color:var(--sub);margin-top:3px}
+.foot{font-size:11px;color:var(--sub);margin-top:18px;text-align:center}</style></head><body>
+<div class="box" id="lock">
+  <div class="logo">BRPConnect</div>
+  <div class="t">Performance Tracker — 노보노디스크<br>접속 암호를 입력하세요</div>
+  <input type="password" id="pw" placeholder="암호" autofocus>
+  <button onclick="go()">접속</button>
+  <div class="err" id="err">암호가 올바르지 않습니다</div>
+  <div class="foot">AES-256 암호화 · 데이터: 신성 202603 · IQVIA 2026.1</div>
+</div>
+<div class="box" id="menu" style="display:none">
+  <div class="logo">BRPConnect</div>
+  <div class="t">Performance Tracker — 노보노디스크</div>
+  <div class="menu">
+    <a href="settings.html"><b>① 담당자 설정</b><span>팀·담당자별 시도/시군구/병의원 담당 구역 설정 (8,049개 기관)</span></a>
+    <a href="dashboard.html"><b>② 담당자 실적 분석</b><span>BU→팀→담당자 드릴다운 · 신성 202603 실측 귀속 98.05%</span></a>
+  </div>
+  <div class="foot">세션 동안 암호가 유지됩니다</div>
+</div>
+<script>
+const CHECK = {"salt":"IvxkKgsSF8RuCPjOD2DMFA==","iv":"k/0rDGflR0E6mlQ7","ct":"voQdmOQVO0rI8a9QRNvwslzLo+Pgvw=="};
+
+async function deriveKey(pw, salt){
+  const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2', salt, iterations:250000, hash:'SHA-256'}, km, {name:'AES-GCM', length:256}, false, ['decrypt']);
+}
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function tryDecrypt(pw, enc){
+  const key = await deriveKey(pw, b64(enc.salt));
+  const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(enc.iv)}, key, b64(enc.ct));
+  return new TextDecoder().decode(pt);
+}
+function showMenu(){ document.getElementById('lock').style.display='none'; document.getElementById('menu').style.display='block'; }
+async function go(){
+  const pw = document.getElementById('pw').value;
+  try{ await tryDecrypt(pw, CHECK); sessionStorage.setItem('brp_pw', pw); showMenu(); }
+  catch(e){ document.getElementById('err').style.display='block'; }
+}
+document.getElementById('pw').addEventListener('keydown', e => { if(e.key==='Enter') go(); });
+(async()=>{ const pw = sessionStorage.getItem('brp_pw'); if(pw){ try{ await tryDecrypt(pw, CHECK); showMenu(); }catch(e){} } })();
+</script></body></html>
