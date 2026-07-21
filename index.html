@@ -33,11 +33,12 @@ button:hover{background:var(--teal-d)}
   <div class="menu">
     <a href="settings.html"><b>① 담당자 설정</b><span>팀·담당자별 시도/시군구/병의원 담당 구역 설정 (8,049개 기관)</span></a>
     <a href="dashboard.html"><b>② 담당자 실적 분석</b><span>BU→팀→담당자 드릴다운 · 신성+BRP(심평원) 202603 · 소스 구분</span></a>
+    <a href="capacity.html"><b>③ 담당구역 처방 케파</b><span>담당지역 의원 처방 케파(카드건수)·미개척 공략 타겟 · 전국 병의원 마스터</span></a>
   </div>
   <div class="foot">세션 동안 암호가 유지됩니다</div>
 </div>
 <script>
-const CHECK = {"salt":"jW40WBEyYifYZfQfwf+iQw==","iv":"4HX9+249klfOcV65","ct":"WK7uWAvkIUzNAqefOCu0qpgNbasNgA=="};
+const CHECK = {"salt":"s46HxOCvKck3lklLecFD9g==","iv":"NVlP4ZTeA1+E3jaB","ct":"bMXeGJkb+wHfe9An8dmWVGXOXbpB4Q=="};
 
 async function deriveKey(pw, salt){
   const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
